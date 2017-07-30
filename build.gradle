@@ -34,9 +34,8 @@ dependencies {
   compile('com.google.protobuf:protobuf-java:3.3.1')
   compile('commons-io:commons-io:2.5')
 
-	testCompile('org.springframework.restdocs:spring-restdocs-core:1.2.0.RELEASE')
-	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc:1.2.0.RELEASE')
-	testCompile('org.springframework.restdocs:spring-restdocs-asciidoctor:1.2.0.RELEASE')
+	testCompile('org.springframework.restdocs:spring-restdocs-core')
+	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
