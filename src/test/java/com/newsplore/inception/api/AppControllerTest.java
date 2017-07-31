@@ -23,9 +23,12 @@ import java.util.stream.Collectors;
 
 import static com.newsplore.DocumentationConfig.API_HOST;
 import static com.newsplore.DocumentationConfig.GENERATED_SNIPPETS_DIR;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -50,6 +53,8 @@ public class AppControllerTest {
                 preprocessRequest(prettyPrint(), replacePattern(Pattern.compile(".*"), "...boat.jpg multipart binary contents...")),
                 preprocessResponse(prettyPrint())))
             .andExpect(status().isOk())
+            .andExpect(jsonPath("label", notNullValue()))
+            .andExpect(jsonPath("probability", notNullValue()))
             .andReturn().getResponse().getContentAsString();
     }
 
