@@ -2,7 +2,8 @@
 
 TL;DR: for the impatient ones wanting to have a web service for image recognition without any Tensorflow prerequisites: run ```./gradlew fetchInceptionFrozenModel bootrun```, navigate to http://localhost:8080 and upload an image. The backend will categorize the image and output the result along with the probability.
 
-Screenshot (non clickable)
+Screenshot (non clickable)<br/>
+
   <img src="cat_classified.jpg" width="560"/>
 
 ## Why
