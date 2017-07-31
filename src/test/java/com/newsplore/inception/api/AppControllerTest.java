@@ -1,7 +1,6 @@
-package com.newsplore.api;
+package com.newsplore.inception.api;
 
-import com.newsplore.service.ClassifyImageService;
-import lombok.extern.slf4j.Slf4j;
+import com.newsplore.inception.service.ClassifyImageService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
-import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -50,7 +47,7 @@ public class AppControllerTest {
             fileUpload("/api/classify")
                 .file(file))
             .andDo(document("classify-image-ok/{step}",
-                preprocessRequest(prettyPrint(), replacePattern(Pattern.compile(".*"), "boat.jpg multipart contents")),
+                preprocessRequest(prettyPrint(), replacePattern(Pattern.compile(".*"), "...boat.jpg multipart binary contents...")),
                 preprocessResponse(prettyPrint())))
             .andExpect(status().isOk())
             .andReturn().getResponse().getContentAsString();

@@ -2,3 +2,5 @@ tf:
   frozenModelPath: inception-v3/inception_v3_2016_08_28_frozen.pb
   labelsPath: inception-v3/imagenet_slim_labels.txt
   outputLayer: InceptionV3/Predictions/Reshape_1
+
+spring.http.multipart.max-file-size: 5MB

@@ -1,6 +1,6 @@
-package com.newsplore.api;
+package com.newsplore.inception.api;
 
-import com.newsplore.service.ClassifyImageService;
+import com.newsplore.inception.service.ClassifyImageService;
 import net.sf.jmimemagic.Magic;
 import net.sf.jmimemagic.MagicMatch;
 import org.springframework.web.bind.annotation.*;
