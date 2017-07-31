@@ -38,7 +38,7 @@ public class ClassifyImageService {
             int bestLabelIdx = maxIndex(labelProbabilities);
             LabelWithProbability labelWithProbability =
                 new LabelWithProbability(labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f, System.currentTimeMillis() -  start);
-            log.info(String.format("Image classification [%s %.2f%%] took %d ms", labelWithProbability.getLabel(), labelWithProbability.getProbability(), labelWithProbability.getElapsed()));
+            log.debug(String.format("Image classification [%s %.2f%%] took %d ms", labelWithProbability.getLabel(), labelWithProbability.getProbability(), labelWithProbability.getElapsed()));
             return labelWithProbability;
         }
     }

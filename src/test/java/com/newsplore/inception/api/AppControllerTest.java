@@ -1,6 +1,5 @@
 package com.newsplore.inception.api;
 
-import com.newsplore.inception.service.ClassifyImageService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +12,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static com.newsplore.DocumentationConfig.API_HOST;
 import static com.newsplore.DocumentationConfig.GENERATED_SNIPPETS_DIR;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
@@ -39,7 +33,6 @@ public class AppControllerTest {
     @Autowired private MockMvc mockMvc;
 
     @Autowired private ResourceLoader resourceLoader;
-    @Autowired private ClassifyImageService classifyImageService;
 
     @Test
     public void classifyImageOk() throws Exception {
@@ -56,19 +49,5 @@ public class AppControllerTest {
             .andExpect(jsonPath("label", notNullValue()))
             .andExpect(jsonPath("probability", notNullValue()))
             .andReturn().getResponse().getContentAsString();
-    }
-
-    @Test
-    public void classifyServiceMutipleImages() throws Exception {
-        String[] images = new String[]{"car.png", "mule.jpg", "Blowfish.jpg", "boat.jpg", "castle.jpg", "peach.jpg"};
-        List<ClassifyImageService.LabelWithProbability> classifs = Arrays.stream(images).map(image -> {
-            try {
-                byte[] bytes = Files.readAllBytes(Paths.get(resourceLoader.getResource("classpath:" + image).getURI()));
-                return classifyImageService.classifyImage(bytes);
-            } catch (IOException e) {
-               throw new IllegalArgumentException(e);
-            }
-        }).collect(Collectors.toList());
-
     }
 }
