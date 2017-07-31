@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,11 +21,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.newsplore.DocumentationConfig.API_HOST;
 import static com.newsplore.DocumentationConfig.GENERATED_SNIPPETS_DIR;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -37,13 +42,16 @@ public class AppControllerTest {
     @Autowired private ClassifyImageService classifyImageService;
 
     @Test
-    public void classifyImageApiOk() throws Exception {
-        byte[] bytes = Files.readAllBytes(Paths.get(resourceLoader.getResource("classpath:Blowfish.jpg").getURI()));
-        MockMultipartFile file = new MockMultipartFile("file", "boat.png", "image/jpeg", bytes);
+    public void classifyImageOk() throws Exception {
+        byte[] bytes = Files.readAllBytes(Paths.get(resourceLoader.getResource("classpath:boat.jpg").getURI()));
+        MockMultipartFile file = new MockMultipartFile("file", "boat.jpg", "image/jpeg", bytes);
 
         String blowfish = this.mockMvc.perform(
             fileUpload("/api/classify")
                 .file(file))
+            .andDo(document("classify-image-ok/{step}",
+                preprocessRequest(prettyPrint(), replacePattern(Pattern.compile(".*"), "boat.jpg multipart contents")),
+                preprocessResponse(prettyPrint())))
             .andExpect(status().isOk())
             .andReturn().getResponse().getContentAsString();
     }

@@ -28,6 +28,7 @@
             $scope.progress = 0;
             $scope.labelVisiblity = {'visibility': 'hidden'};
             $scope.submitDisable = true;
+            $scope.waitComputing = {'visibility': 'hidden'};
 
             $scope.getFile = function () {
                 $scope.submitDisable = false;
@@ -49,6 +50,7 @@
                     $scope.errMessage = "Select a file first";
                     return;
                 }
+                $scope.waitComputing = {'visibility': 'visible'};
                 $scope.submitDisable = true;
                 var file = files[0]
                 var fd = new FormData();
@@ -60,6 +62,7 @@
                 ).success(function (result) {
                     console.log(result)
                     $scope.labelVisiblity = {'visibility': 'visible'};
+                    $scope.waitComputing = {'visibility': 'hidden'};
                     $scope.classification = result
                     $scope.submitDisable = false;
                 }).error(function () {
@@ -70,17 +73,20 @@
     </script>
     <script src="upload.js"></script>
     <div style="text-align: center;">
-        <input class="ng-hide" type="file" id="newFile" name="file" ng-file-select="onFileSelect($files)"/>
-        <label for="newFile" class="md-button md-raised">Choose image</label>
-        <md-button class="md-raised md-primary" type="button" ng-click="doSaveNewDoc()" ng-disabled="submitDisable">
-            Classify
-        </md-button>
-        <br/><br/>
-        <div style="color:darkblue" ng-style="labelVisiblity"><b>{{classification.label}}</b> Probability
-            {{classification.probability}}%. Took {{classification.elapsed}} ms
-        </div>
+        <md-content layout="row" layout-align="center">
+            <input class="ng-hide" type="file" id="newFile" name="file" ng-file-select="onFileSelect($files)"/>
+            <label for="newFile" class="md-button md-raised">Choose image</label>
+            <md-button class="md-raised md-primary" type="button" ng-click="doSaveNewDoc()" ng-disabled="submitDisable">
+                Classify
+            </md-button>
+        </md-content>
+        <md-progress-linear md-mode="indeterminate" md-diameter="20px" ng-style="waitComputing"></md-progress-linear>
         <br/>
-        <img ng-src="{{imageSrc}}"/>
+        <md-content style="color:darkblue" ng-style="labelVisiblity">
+            <b>{{classification.label}}</b> Probability {{classification.probability}}%. Took {{classification.elapsed}} ms
+        </md-content>
+        <br/>
+        <md-whiteframe class="md-whiteframe-4dp" flex-sm="45" flex-gt-sm="35" flex-gt-md="25"><img ng-src="{{imageSrc}}"/></md-whiteframe>
         <p style="color:red">{{errMessage}}</p>
     </div>
 </div>
