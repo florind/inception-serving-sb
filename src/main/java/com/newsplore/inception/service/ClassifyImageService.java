@@ -20,15 +20,19 @@ public class ClassifyImageService {
     private final List<String> labels;
     private final String outputLayer;
 
-    private final int H = 299;
-    private int W = 299;
-    private float mean = 0;
-    private float scale = 255f;
+    private  int W, H;
+    private float mean, scale;
 
-    public ClassifyImageService(Graph inceptionGraph, List<String> labels, @Value("${tf.outputLayer}") String outputLayer) {
+    public ClassifyImageService(Graph inceptionGraph, List<String> labels, @Value("${tf.outputLayer}") String outputLayer,
+                                @Value("${tf.image.width}") int imageW, @Value("${tf.image.height}") int imageH,
+                                @Value("${tf.image.mean}")float mean, @Value("${tf.image.scale}") float scale) {
         this.inceptionGraph = inceptionGraph;
         this.labels = labels;
         this.outputLayer = outputLayer;
+        this.H = imageH;
+        this.W = imageW;
+        this.mean = mean;
+        this.scale = scale;
     }
 
     public LabelWithProbability classifyImage(byte[] imageBytes) {
