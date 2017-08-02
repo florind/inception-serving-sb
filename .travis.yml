@@ -6,4 +6,4 @@ jdk:
 install: true
 
 script:
-  - ./gradlew fetchInceptionFrozenModel build
+  - ./gradlew fetchInceptionFrozenModel cobertura coveralls build
