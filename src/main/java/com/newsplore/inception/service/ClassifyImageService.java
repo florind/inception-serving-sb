@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.tensorflow.*;
@@ -49,7 +48,7 @@ public class ClassifyImageService {
     }
 
     private float[] classifyImageProbabilities (Tensor image) {
-        try (Session s = new Session(inceptionGraph, Base64.decodeBase64("QAE="));
+        try (Session s = new Session(inceptionGraph);
              Tensor result = s.runner().feed("input", image).fetch(outputLayer).run().get(0)) {
             final long[] rshape = result.shape();
             if (result.numDimensions() != 2 || rshape[0] != 1) {
