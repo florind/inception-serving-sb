@@ -1,11 +1,30 @@
 tf:
-  frozenModelPath: inception-v3/inception_v3_2016_08_28_frozen.pb
-  labelsPath: inception-v3/imagenet_slim_labels.txt
-  outputLayer: InceptionV3/Predictions/Reshape_1
+#  frozenModelPath: restnet-v2/optimized_frozen_restnetv2.pb
+#  labelsPath: restnet-v2/labels.txt
+#  outputLayer: InceptionResnetV2/Logits/Predictions
+#  image:
+#    width: 299
+#    height: 299
+#    mean: 0
+#    scale: 255
+
+#  frozenModelPath: inception-v3/inception_v3_2016_08_28_frozen.pb
+#  labelsPath: inception-v3/imagenet_slim_labels.txt
+#  outputLayer: InceptionV3/Predictions/Reshape_1
+#  image:
+#    width: 299
+#    height: 299
+#    mean: 0
+#    scale: 255
+
+  frozenModelPath: mobilenet-v1/frozen_mobilenet_v1.pb
+  labelsPath: mobilenet-v1/labels.txt
+  outputLayer: MobilenetV1/Predictions/Softmax
+  #params from https://github.com/tensorflow/models/blob/master/slim/scripts/export_mobilenet.sh#L111
   image:
-    width: 299
-    height: 299
-    mean: 0
-    scale: 255
+    width: 227
+    height: 227
+    mean: 127
+    scale: 127
 
 spring.http.multipart.max-file-size: 5MB

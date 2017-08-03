@@ -94,5 +94,5 @@ task fetchInceptionFrozenModel(dependsOn: downloadInceptionFrozen, type: Copy) {
   into 'src/main/resources/inception-v3'
 }
 
-build.dependsOn fetchInceptionFrozenModel
+build.dependsOn fetchInceptionFrozenModel, copyRestDocs
 cobertura.coverageFormats = ['html', 'xml']
