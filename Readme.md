@@ -22,3 +22,6 @@ Navigate to http://localhost:8080 and upload an image. The backend will categori
 
 ## How
 Head to [the blog post](https://blog.newsplore.com/2017/07/31/zero-to-image-recognition-in-60-seconds-with-tensorflow-and-spring-boot) for the ful monty.
+
+## Kotlin
+Thanks to @mcjojos, a port to Kotlin is now [available](https://github.com/florind/inception-serving-sb/tree/kotlin) in a separate branch. Woot!
