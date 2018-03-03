@@ -58,7 +58,7 @@ public class ClassifyImageService {
                         Arrays.toString(rshape)));
             }
             int nlabels = (int) rshape[1];
-            return result.copyTo(new float[1][nlabels])[0];
+            return ((float[][])result.copyTo(new float[1][nlabels]))[0];
         }
     }
 
