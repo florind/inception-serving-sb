@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.tensorflow.*;
 
+import javax.annotation.PreDestroy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @Slf4j
 public class ClassifyImageService {
 
-    private final Graph inceptionGraph;
+    private final Session session;
     private final List<String> labels;
     private final String outputLayer;
 
@@ -26,13 +27,13 @@ public class ClassifyImageService {
     public ClassifyImageService(Graph inceptionGraph, List<String> labels, @Value("${tf.outputLayer}") String outputLayer,
                                 @Value("${tf.image.width}") int imageW, @Value("${tf.image.height}") int imageH,
                                 @Value("${tf.image.mean}")float mean, @Value("${tf.image.scale}") float scale) {
-        this.inceptionGraph = inceptionGraph;
         this.labels = labels;
         this.outputLayer = outputLayer;
         this.H = imageH;
         this.W = imageW;
         this.mean = mean;
         this.scale = scale;
+        this.session = new Session(inceptionGraph);
     }
 
     public LabelWithProbability classifyImage(byte[] imageBytes) {
@@ -48,8 +49,7 @@ public class ClassifyImageService {
     }
 
     private float[] classifyImageProbabilities (Tensor image) {
-        try (Session s = new Session(inceptionGraph);
-             Tensor result = s.runner().feed("input", image).fetch(outputLayer).run().get(0)) {
+        try (Tensor result = session.runner().feed("input", image).fetch(outputLayer).run().get(0)) {
             final long[] rshape = result.shape();
             if (result.numDimensions() != 2 || rshape[0] != 1) {
                 throw new RuntimeException(
@@ -152,6 +152,11 @@ public class ClassifyImageService {
         }
 
         private Graph g;
+    }
+
+    @PreDestroy
+    public void close() {
+        session.close();
     }
 
     @Data
