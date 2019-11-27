@@ -1,4 +1,4 @@
-FROM java:8
+FROM java:11
 VOLUME /tmp
 ADD build/libs/inception-serving-sb.jar app.jar
 RUN bash -c 'touch /app.jar'
