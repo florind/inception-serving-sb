@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.1.2.RELEASE'
+		springBootVersion = '2.2.1.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -38,7 +38,7 @@ repositories {
 dependencies {
   compile('org.springframework.boot:spring-boot-starter-web')
   compile('org.projectlombok:lombok:1.18.4')
-  compile('org.tensorflow:tensorflow:1.12.0')
+  compile('org.tensorflow:tensorflow:1.15.0')
   compile('commons-io:commons-io:2.5')
   compile('jmimemagic:jmimemagic:0.1.2')
 
