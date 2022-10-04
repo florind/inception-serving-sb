@@ -11,11 +11,12 @@ buildscript {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 		classpath "de.undercouch:gradle-download-task:5.2.1"
 		classpath "net.saliman:gradle-cobertura-plugin:4.0.0"
+		classpath "com.google.guava:guava:31.1-jre"
 	}
 }
 
 plugins {
-	id "org.asciidoctor.convert" version "2.4.0"
+	id 'org.asciidoctor.jvm.convert' version '3.1.0'
 	id 'com.github.kt3k.coveralls' version '2.12.0'
 	id 'io.franzbecker.gradle-lombok' version '5.0.0'
 }
@@ -25,9 +26,13 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'application'
 apply plugin: 'de.undercouch.download'
-apply plugin: "net.saliman.cobertura"
+apply plugin: 'net.saliman.cobertura'
 
-sourceCompatibility = 11
+configurations {
+	asciidoctorExt
+}
+
+sourceCompatibility = 8
 
 repositories {
 	mavenCentral()
@@ -36,15 +41,15 @@ repositories {
 }
 
 dependencies {
-  compile('org.springframework.boot:spring-boot-starter-web')
-  compile('org.projectlombok:lombok:1.18.24')
-  compile('org.tensorflow:tensorflow:1.15.0')
-  compile('commons-io:commons-io:2.11.0')
-  compile('jmimemagic:jmimemagic:0.1.2')
+  implementation('org.springframework.boot:spring-boot-starter-web')
+  implementation('org.projectlombok:lombok:1.18.24')
+  implementation('org.tensorflow:tensorflow:1.15.0')
+  implementation('commons-io:commons-io:2.11.0')
+  implementation('jmimemagic:jmimemagic:0.1.2')
 
-  asciidoctor('org.springframework.restdocs:spring-restdocs-asciidoctor')
-  testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
-  testCompile('org.springframework.boot:spring-boot-starter-test')
+  asciidoctorExt('org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.6-RELEASE')
+  testImplementation('org.springframework.restdocs:spring-restdocs-mockmvc')
+  testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
 ext {
