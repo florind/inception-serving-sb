@@ -72,7 +72,7 @@ task copyRestDocs(type: Copy) {
 }
 
 jar {
-	baseName = "inception-serving-sb"
+	archiveBaseName = "inception-serving-sb"
 	dependsOn copyRestDocs
 	from("build/asciidoc/html5") {
 		into 'public/docs'
