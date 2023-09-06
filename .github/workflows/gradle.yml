@@ -14,4 +14,9 @@ jobs:
       with:
         java-version: 17
     - name: Build with Gradle
-      run: ./gradlew fetchInceptionFrozenModel jacocoTestReport coverallsJacoco build
+      run: ./gradlew fetchInceptionFrozenModel jacocoTestReport build
+    - name: Coveralls
+      uses: coverallsapp/github-action@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: build/reports/jacoco/test/jacocoTestReport.xml
