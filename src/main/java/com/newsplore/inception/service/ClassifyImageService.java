@@ -7,8 +7,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.tensorflow.*;
+import org.tensorflow.ndarray.NdArrays;
+import org.tensorflow.ndarray.Shape;
+import org.tensorflow.ndarray.buffer.FloatDataBuffer;
+import org.tensorflow.op.OpScope;
+import org.tensorflow.op.Scope;
+import org.tensorflow.proto.framework.DataType;
+import org.tensorflow.types.TFloat32;
+import org.tensorflow.types.TInt32;
+import org.tensorflow.types.TString;
+import org.tensorflow.types.family.TType;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,8 +31,10 @@ public class ClassifyImageService {
     private final List<String> labels;
     private final String outputLayer;
 
-    private  int W, H;
-    private float mean, scale;
+    private final int W;
+    private final int H;
+    private final float mean;
+    private final float scale;
 
     public ClassifyImageService(Graph inceptionGraph, List<String> labels, @Value("${tf.outputLayer}") String outputLayer,
                                 @Value("${tf.image.width}") int imageW, @Value("${tf.image.height}") int imageH,
@@ -50,15 +62,19 @@ public class ClassifyImageService {
 
     private float[] classifyImageProbabilities (Tensor image) {
         try (Tensor result = session.runner().feed("input", image).fetch(outputLayer).run().get(0)) {
-            final long[] rshape = result.shape();
-            if (result.numDimensions() != 2 || rshape[0] != 1) {
+            final Shape resultShape = result.shape();
+            final long[] rShape = resultShape.asArray();
+            if (resultShape.numDimensions() != 2 || rShape[0] != 1) {
                 throw new RuntimeException(
                     String.format(
                         "Expected model to produce a [1 N] shaped tensor where N is the number of labels, instead it produced one with shape %s",
-                        Arrays.toString(rshape)));
+                        Arrays.toString(rShape)));
             }
-            int nlabels = (int) rshape[1];
-            return ((float[][])result.copyTo(new float[1][nlabels]))[0];
+            int nlabels = (int) rShape[1];
+            FloatDataBuffer resultFloatBuffer = result.asRawTensor().data().asFloats();
+            float [] dst = new float[nlabels];
+            resultFloatBuffer.read(dst);
+            return dst;
         }
     }
 
@@ -74,7 +90,12 @@ public class ClassifyImageService {
     }
 
     private Tensor normalizedImageToTensor(byte[] imageBytes) {
-        try (Graph g = new Graph()) {
+        try (Graph g = new Graph();
+             TInt32 batchTensor = TInt32.scalarOf(0);
+             TInt32 sizeTensor = TInt32.vectorOf(H, W);
+             TFloat32 meanTensor = TFloat32.scalarOf(mean);
+             TFloat32 scaleTensor = TFloat32.scalarOf(scale);
+        ) {
             GraphBuilder b = new GraphBuilder(g);
             //Tutorial python here: https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/label_image
             // Some constants specific to the pre-trained model at:
@@ -87,17 +108,17 @@ public class ClassifyImageService {
             // Since the graph is being constructed once per execution here, we can use a constant for the
             // input image. If the graph were to be re-used for multiple input images, a placeholder would
             // have been more appropriate.
-            final Output input = b.constant("input", imageBytes);
+            final Output input = b.constant("input", TString.tensorOfBytes(NdArrays.scalarOfObject(imageBytes)));
             final Output output =
                 b.div(
                     b.sub(
                         b.resizeBilinear(
                             b.expandDims(
-                                b.cast(b.decodeJpeg(input, 3), DataType.FLOAT),
-                                b.constant("make_batch", 0)),
-                            b.constant("size", new int[] {H, W})),
-                        b.constant("mean", mean)),
-                    b.constant("scale", scale));
+                                b.cast(b.decodeJpeg(input, 3), DataType.DT_FLOAT),
+                                b.constant("make_batch", batchTensor)),
+                            b.constant("size", sizeTensor)),
+                        b.constant("mean", meanTensor)),
+                    b.constant("scale", scaleTensor));
             try (Session s = new Session(g)) {
                 return s.runner().fetch(output.op().name()).run().get(0);
             }
@@ -105,8 +126,10 @@ public class ClassifyImageService {
     }
 
     static class GraphBuilder {
+        final Scope scope;
         GraphBuilder(Graph g) {
             this.g = g;
+            this.scope = new OpScope(g);
         }
 
         Output div(Output x, Output y) {
@@ -126,32 +149,30 @@ public class ClassifyImageService {
         }
 
         Output cast(Output value, DataType dtype) {
-            return g.opBuilder("Cast", "Cast").addInput(value).setAttr("DstT", dtype).build().output(0);
+            return g.opBuilder("Cast", "Cast", scope).addInput(value).setAttr("DstT", dtype).build().output(0);
         }
 
         Output decodeJpeg(Output contents, long channels) {
-            return g.opBuilder("DecodeJpeg", "DecodeJpeg")
+            return g.opBuilder("DecodeJpeg", "DecodeJpeg", scope)
                 .addInput(contents)
                 .setAttr("channels", channels)
                 .build()
                 .output(0);
         }
 
-        Output constant(String name, Object value) {
-            try (Tensor t = Tensor.create(value)) {
-                return g.opBuilder("Const", name)
-                    .setAttr("dtype", t.dataType())
-                    .setAttr("value", t)
-                    .build()
-                    .output(0);
-            }
+        Output<? extends TType> constant(String name, Tensor t) {
+            return g.opBuilder("Const", name, scope)
+                .setAttr("dtype", t.dataType())
+                .setAttr("value", t)
+                .build()
+                .output(0);
         }
 
         private Output binaryOp(String type, Output in1, Output in2) {
-            return g.opBuilder(type, type).addInput(in1).addInput(in2).build().output(0);
+            return g.opBuilder(type, type, scope).addInput(in1).addInput(in2).build().output(0);
         }
 
-        private Graph g;
+        private final Graph g;
     }
 
     @PreDestroy

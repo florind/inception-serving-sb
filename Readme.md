@@ -18,7 +18,13 @@ This project only addresses serving a Tensorflow pre-trained image categorizatio
 ## Run
 ```./gradlew fetchInceptionFrozenModel bootrun```
 
-Navigate to http://localhost:8080 and upload an image. The backend will categorize the image and output the result along with the probability.
+#### Or build & run executable jar
+```
+./gradlew bootjar
+build/libs/inception-serving-sb.jar
+```
+
+Then navigate to http://localhost:8080 and upload an image. The backend will categorize the image and output the result along with the probability.
 
 ## How
 Head to [the blog post](https://blog.newsplore.com/2017/07/31/zero-to-image-recognition-in-60-seconds-with-tensorflow-and-spring-boot) for the ful monty.

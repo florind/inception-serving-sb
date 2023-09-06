@@ -10,9 +10,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.tensorflow.Graph;
+import org.tensorflow.proto.framework.GraphDef;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class Application {
         Resource graphResource = getResource(tfFrozenModelPath);
 
 		Graph graph = new Graph();
-		graph.importGraphDef(IOUtils.toByteArray(graphResource.getInputStream()));
+        graph.importGraphDef(GraphDef.parseFrom(graphResource.getInputStream()));
 		log.info("Loaded Tensorflow model");
 		return graph;
 	}
@@ -49,7 +50,7 @@ public class Application {
     public List<String> tfModelLabels(@Value("${tf.labelsPath}") String labelsPath) throws IOException {
         Resource labelsRes = getResource(labelsPath);
         log.info("Loaded model labels");
-	    return IOUtils.readLines(labelsRes.getInputStream(), Charset.forName("UTF-8")).stream()
+	    return IOUtils.readLines(labelsRes.getInputStream(), StandardCharsets.UTF_8).stream()
             .map(label -> label.substring(label.contains(":") ? label.indexOf(":")+1 : 0)).collect(Collectors.toList());
     }
 }

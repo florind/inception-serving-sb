@@ -12,7 +12,7 @@ import java.io.IOException;
 @RequestMapping("/api")
 public class AppController {
 
-    private ClassifyImageService classifyImageService;
+    private final ClassifyImageService classifyImageService;
 
     public AppController(ClassifyImageService classifyImageService) {
         this.classifyImageService = classifyImageService;

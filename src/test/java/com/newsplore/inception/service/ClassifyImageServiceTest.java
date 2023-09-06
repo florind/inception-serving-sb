@@ -1,13 +1,12 @@
 package com.newsplore.inception.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Slf4j
 public class ClassifyImageServiceTest {
@@ -30,7 +31,7 @@ public class ClassifyImageServiceTest {
             try {
                 byte[] bytes = Files.readAllBytes(Paths.get(resourceLoader.getResource("classpath:" + image).getURI()));
                 ClassifyImageService.LabelWithProbability labelWithProbability = classifyImageService.classifyImage(bytes);
-                Assert.assertNotNull(labelWithProbability.getLabel());
+                assertNotNull(labelWithProbability.getLabel());
                 return labelWithProbability;
             } catch (IOException e) {
                 throw new IllegalArgumentException(e);
