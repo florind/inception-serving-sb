@@ -1,6 +1,6 @@
 # Zero to image recognition in 60 seconds with Tensorflow and Spring Boot 
 
-[![Build Status](https://github.com/florind/inception-serving-sb/actions/workflows/gradle.yml/badge.svg)
+![Build Status](https://github.com/florind/inception-serving-sb/actions/workflows/gradle.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/florind/inception-serving-sb/badge.svg?branch=master)](https://coveralls.io/github/florind/inception-serving-sb?branch=master)
 
 TL;DR: for the impatient ones wanting to have a web service for image recognition without any Tensorflow prerequisites: run ```./gradlew fetchInceptionFrozenModel bootrun```, navigate to http://localhost:8080 and upload an image. The backend will categorize the image and output the result along with the probability.
