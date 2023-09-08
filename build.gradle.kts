@@ -3,16 +3,14 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    kotlin("jvm") version "1.5.21"
-    id("org.springframework.boot") version "3.1.3"
-    id("org.asciidoctor.jvm.convert") version "4.0.0-alpha.1"
-    id("com.github.kt3k.coveralls") version "2.12.2"
-    id("io.franzbecker.gradle-lombok") version "5.0.0"
-    id("com.github.nbaztec.coveralls-jacoco") version "1.2.16"
     application
-    id("de.undercouch.download") version "5.5.0"
     jacoco
     checkstyle
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.asciidoctor)
+    alias(libs.plugins.coveralls.jacoco)
+    alias(libs.plugins.lombok)
+    alias(libs.plugins.downloading)
 }
 
 repositories {
@@ -21,14 +19,15 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:3.1.3"))
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.projectlombok:lombok:1.18.28")
-    implementation("org.tensorflow:tensorflow-core-platform:0.5.0")
-    implementation("commons-io:commons-io:2.13.0")
-    implementation("jmimemagic:jmimemagic:0.1.2")
-    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation(platform(libs.spring.boot.dependencies))
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.lombok)
+    implementation(libs.tensorflow)
+    implementation(libs.commons.io)
+    implementation(libs.jmimemagic)
+
+    testImplementation(libs.spring.restdocs.mockmvc)
+    testImplementation(libs.spring.boot.starter.test)
 }
 
 tasks {
