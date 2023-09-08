@@ -8,6 +8,7 @@
             <property name="sortStaticImportsAlphabetically" value="true"/>
             <property name="ordered" value="true"/>
         </module>
+        <module name="UnusedImports"/>
         <module name="AvoidStarImport">
             <property name="severity" value="error" />
         </module>
