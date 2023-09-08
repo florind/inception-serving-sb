@@ -23,6 +23,8 @@ This project only addresses serving a Tensorflow pre-trained image categorizatio
 ./gradlew bootjar
 build/libs/inception-serving-sb.jar
 ```
+#### Why it doesn't this work on my Apple Silicon machine?
+Tensorflow jars are not distributed for the Apple Silicon hardware. More info [here](https://github.com/tensorflow/java#individual-dependencies)
 
 Then navigate to http://localhost:8080 and upload an image. The backend will categorize the image and output the result along with the probability.
 
