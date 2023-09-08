@@ -1,12 +1,18 @@
 package com.newsplore.inception.service;
 
+import jakarta.annotation.PreDestroy;
+import java.util.Arrays;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.tensorflow.*;
+import org.tensorflow.Graph;
+import org.tensorflow.Output;
+import org.tensorflow.Session;
+import org.tensorflow.Tensor;
 import org.tensorflow.ndarray.NdArrays;
 import org.tensorflow.ndarray.Shape;
 import org.tensorflow.ndarray.buffer.FloatDataBuffer;
@@ -17,10 +23,6 @@ import org.tensorflow.types.TFloat32;
 import org.tensorflow.types.TInt32;
 import org.tensorflow.types.TString;
 import org.tensorflow.types.family.TType;
-
-import jakarta.annotation.PreDestroy;
-import java.util.Arrays;
-import java.util.List;
 
 //Inspired from https://github.com/tensorflow/tensorflow/blob/master/tensorflow/java/src/main/java/org/tensorflow/examples/LabelImage.java
 @Service
@@ -36,9 +38,11 @@ public class ClassifyImageService {
     private final float mean;
     private final float scale;
 
-    public ClassifyImageService(Graph inceptionGraph, List<String> labels, @Value("${tf.outputLayer}") String outputLayer,
-                                @Value("${tf.image.width}") int imageW, @Value("${tf.image.height}") int imageH,
-                                @Value("${tf.image.mean}")float mean, @Value("${tf.image.scale}") float scale) {
+    public ClassifyImageService(
+        Graph inceptionGraph, List<String> labels, @Value("${tf.outputLayer}") String outputLayer,
+        @Value("${tf.image.width}") int imageW, @Value("${tf.image.height}") int imageH,
+        @Value("${tf.image.mean}") float mean, @Value("${tf.image.scale}") float scale
+    ) {
         this.labels = labels;
         this.outputLayer = outputLayer;
         this.H = imageH;
@@ -54,13 +58,19 @@ public class ClassifyImageService {
             float[] labelProbabilities = classifyImageProbabilities(image);
             int bestLabelIdx = maxIndex(labelProbabilities);
             LabelWithProbability labelWithProbability =
-                new LabelWithProbability(labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f, System.currentTimeMillis() -  start);
-            log.debug(String.format("Image classification [%s %.2f%%] took %d ms", labelWithProbability.getLabel(), labelWithProbability.getProbability(), labelWithProbability.getElapsed()));
+                new LabelWithProbability(labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f, System.currentTimeMillis() - start);
+            log.debug(String.format(
+                    "Image classification [%s %.2f%%] took %d ms",
+                    labelWithProbability.getLabel(),
+                    labelWithProbability.getProbability(),
+                    labelWithProbability.getElapsed()
+                )
+            );
             return labelWithProbability;
         }
     }
 
-    private float[] classifyImageProbabilities (Tensor image) {
+    private float[] classifyImageProbabilities(Tensor image) {
         try (Tensor result = session.runner().feed("input", image).fetch(outputLayer).run().get(0)) {
             final Shape resultShape = result.shape();
             final long[] rShape = resultShape.asArray();
@@ -68,16 +78,16 @@ public class ClassifyImageService {
                 throw new RuntimeException(
                     String.format(
                         "Expected model to produce a [1 N] shaped tensor where N is the number of labels, instead it produced one with shape %s",
-                        Arrays.toString(rShape)));
+                        Arrays.toString(rShape)
+                    ));
             }
             int nlabels = (int) rShape[1];
             FloatDataBuffer resultFloatBuffer = result.asRawTensor().data().asFloats();
-            float [] dst = new float[nlabels];
+            float[] dst = new float[nlabels];
             resultFloatBuffer.read(dst);
             return dst;
         }
     }
-
 
     private int maxIndex(float[] probabilities) {
         int best = 0;
@@ -115,10 +125,14 @@ public class ClassifyImageService {
                         b.resizeBilinear(
                             b.expandDims(
                                 b.cast(b.decodeJpeg(input, 3), DataType.DT_FLOAT),
-                                b.constant("make_batch", batchTensor)),
-                            b.constant("size", sizeTensor)),
-                        b.constant("mean", meanTensor)),
-                    b.constant("scale", scaleTensor));
+                                b.constant("make_batch", batchTensor)
+                            ),
+                            b.constant("size", sizeTensor)
+                        ),
+                        b.constant("mean", meanTensor)
+                    ),
+                    b.constant("scale", scaleTensor)
+                );
             try (Session s = new Session(g)) {
                 return s.runner().fetch(output.op().name()).run().get(0);
             }
@@ -127,6 +141,7 @@ public class ClassifyImageService {
 
     static class GraphBuilder {
         final Scope scope;
+
         GraphBuilder(Graph g) {
             this.g = g;
             this.scope = new OpScope(g);
@@ -181,7 +196,8 @@ public class ClassifyImageService {
     }
 
     @Data
-    @NoArgsConstructor @AllArgsConstructor
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class LabelWithProbability {
         private String label;
         private float probability;

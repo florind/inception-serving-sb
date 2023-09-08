@@ -7,8 +7,9 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.util.StringUtils;
-
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -19,9 +20,11 @@ public class DocumentationConfig {
 
     @Bean
     public RestDocumentationResultHandler restDocumentation() {
-        return MockMvcRestDocumentation.document("{method-name}/{step}",
-                                                 preprocessRequest(prettyPrint()),
-                                                 preprocessResponse(prettyPrint()));
+        return MockMvcRestDocumentation.document(
+            "{method-name}/{step}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())
+        );
     }
 
     public static class ConstrainedFields {
@@ -38,9 +41,9 @@ public class DocumentationConfig {
                 nestedField = path.substring(path.lastIndexOf(".") + 1);
             }
             return fieldWithPath(path)
-                    .attributes(key("constraints")
-                                .value(StringUtils.collectionToDelimitedString(
-                                      this.constraintDescriptions.descriptionsForProperty(nestedField),". ")));
+                .attributes(key("constraints")
+                    .value(StringUtils.collectionToDelimitedString(
+                        this.constraintDescriptions.descriptionsForProperty(nestedField), ". ")));
         }
     }
 }

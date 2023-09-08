@@ -14,7 +14,7 @@ jobs:
       with:
         java-version: 17
     - name: Build with Gradle
-      run: ./gradlew fetchInceptionFrozenModel jacocoTestReport build
+      run: ./gradlew fetchInceptionFrozenModel check jacocoTestReport
     - name: Coveralls
       uses: coverallsapp/github-action@v2
       with:

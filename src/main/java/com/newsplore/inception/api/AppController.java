@@ -1,12 +1,15 @@
 package com.newsplore.inception.api;
 
 import com.newsplore.inception.service.ClassifyImageService;
+import java.io.IOException;
 import net.sf.jmimemagic.Magic;
 import net.sf.jmimemagic.MagicMatch;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
