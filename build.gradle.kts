@@ -2,6 +2,8 @@ import de.undercouch.gradle.tasks.download.Download
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 
+group = "com.newsplore"
+
 plugins {
     application
     jacoco
@@ -9,23 +11,26 @@ plugins {
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.asciidoctor)
     alias(libs.plugins.coveralls.jacoco)
-    alias(libs.plugins.lombok)
     alias(libs.plugins.downloading)
+    alias(libs.plugins.graalvm.buildtools)
 }
 
 repositories {
     mavenCentral()
-    maven(url = "https://repo.spring.io/release")
 }
 
 dependencies {
     implementation(platform(libs.spring.boot.dependencies))
     implementation(libs.spring.boot.starter.web)
-    implementation(libs.lombok)
     implementation(libs.tensorflow)
     implementation(libs.commons.io)
     implementation(libs.jmimemagic)
 
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+
+    testCompileOnly(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
     testImplementation(libs.spring.restdocs.mockmvc)
     testImplementation(libs.spring.boot.starter.test)
 }
@@ -56,7 +61,7 @@ tasks {
     }
 
     checkstyle {
-        configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+        configFile = rootProject.file("${rootDir}/config/checkstyle/checkstyle.xml")
     }
 
     val inceptionFrozenDownload by register<Download>("downloadInceptionFrozen") {
@@ -75,10 +80,6 @@ tasks {
         dependsOn(fetchInceptionFrozenModel)
     }
 
-    lombok {
-        version = "1.18.28"
-        sha256 = ""
-    }
 
     named<BootJar>("bootJar") {
         dependsOn(asciidoctor)

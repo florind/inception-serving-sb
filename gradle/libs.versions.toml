@@ -2,12 +2,11 @@
 asciidoctor = "4.0.0-alpha.1"
 commons-io = "2.13.0"
 downloading = "5.5.0"
-gradle-lombok = "5.0.0"
 coveralls = "2.12.2"
 coveralls-jacoco = "1.2.16"
 jmimemagic = "0.1.2"
-lombok = "1.18.20"
-spring-boot = "3.1.3"
+lombok = "1.18.30"
+spring-boot = "3.1.4"
 tensorflow = "0.5.0"
 
 [libraries]
@@ -25,6 +24,6 @@ tensorflow = { module = "org.tensorflow:tensorflow-core-platform", version.ref =
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 asciidoctor = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
 coveralls = { id = "org.gradle.jacoco", version.ref = "coveralls" }
-lombok = { id = "io.franzbecker.gradle-lombok", version.ref = "gradle-lombok" }
 coveralls-jacoco = { id = "com.github.nbaztec.coveralls-jacoco", version.ref = "coveralls-jacoco" }
 downloading = { id = "de.undercouch.download", version.ref = "downloading" }
+graalvm-buildtools = { id ='org.graalvm.buildtools.native', version = '0.9.17' }

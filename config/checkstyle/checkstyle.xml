@@ -24,4 +24,10 @@
     <module name="LineLength">
         <property name="max" value="160"/>
     </module>
+    <!-- Exclude folder -->
+    <module name="SuppressionFilter">
+        <property name="optional" value="true"/>
+        <property name="fileExtensions" value="java"/>
+        <property name="files" value="**/build/**"/>
+    </module>
 </module>
