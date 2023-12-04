@@ -1,6 +1,6 @@
 [versions]
 asciidoctor = "4.0.0-alpha.1"
-commons-io = "2.15.0"
+commons-io = "2.15.1"
 downloading = "5.5.0"
 gradle-lombok = "5.0.0"
 coveralls = "2.12.2"
