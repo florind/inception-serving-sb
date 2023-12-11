@@ -76,8 +76,7 @@ tasks {
     }
 
     lombok {
-        version = "1.18.28"
-        sha256 = ""
+        version = "1.18.30"
     }
 
     named<BootJar>("bootJar") {
