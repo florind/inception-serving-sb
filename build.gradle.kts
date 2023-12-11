@@ -80,13 +80,16 @@ tasks {
         dependsOn(fetchInceptionFrozenModel)
     }
 
-
-    named<BootJar>("bootJar") {
-        dependsOn(asciidoctor)
+    bootJar {
         mainClass.set("com.newsplore.Application")
-        launchScript()
+        metaInf {
+            mainClass.set("com.newsplore.Application")
+        }
     }
 
+    graalvmNative {
+        useArgFile = false
+    }
     val bootRun by named<BootRun>("bootRun") {
         dependsOn(asciidoctor)
     }
