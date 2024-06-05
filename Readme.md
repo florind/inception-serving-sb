@@ -13,7 +13,7 @@ Tensorflow is hard enough to wrap one's head around. It has several parts that d
 This project only addresses serving a Tensorflow pre-trained image categorization model, otherwise called the Inception model.
 
 ## Prerequisites
-- JDK 17
+- JDK 17-21
 
 ## Run
 ```./gradlew fetchInceptionFrozenModel bootrun```
