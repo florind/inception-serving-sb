@@ -18,7 +18,7 @@ import org.tensorflow.ndarray.Shape;
 import org.tensorflow.ndarray.buffer.FloatDataBuffer;
 import org.tensorflow.op.OpScope;
 import org.tensorflow.op.Scope;
-import org.tensorflow.proto.framework.DataType;
+import org.tensorflow.proto.DataType;
 import org.tensorflow.types.TFloat32;
 import org.tensorflow.types.TInt32;
 import org.tensorflow.types.TString;
