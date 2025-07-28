@@ -7,7 +7,7 @@ coveralls = "2.12.2"
 coveralls-jacoco = "1.2.20"
 jmimemagic = "0.1.2"
 lombok = "1.18.38"
-spring-boot = "3.5.0"
+spring-boot = "3.5.4"
 tensorflow = "1.0.0"
 
 [libraries]
