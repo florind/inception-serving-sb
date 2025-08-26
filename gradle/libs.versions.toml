@@ -1,5 +1,5 @@
 [versions]
-asciidoctor = "4.0.4"
+asciidoctor = "4.0.5"
 commons-io = "2.19.0"
 downloading = "5.6.0"
 gradle-lombok = "5.0.0"
