@@ -1,14 +1,14 @@
 [versions]
-asciidoctor = "4.0.4"
-commons-io = "2.19.0"
+asciidoctor = "4.0.5"
+commons-io = "2.20.0"
 downloading = "5.6.0"
 gradle-lombok = "5.0.0"
 coveralls = "2.12.2"
 coveralls-jacoco = "1.2.20"
 jmimemagic = "0.1.2"
-lombok = "1.18.38"
-spring-boot = "3.5.0"
-tensorflow = "1.0.0"
+lombok = "1.18.40"
+spring-boot = "3.5.5"
+tensorflow = "1.1.0"
 
 [libraries]
 spring-boot = { module = "org.springframework.boot:spring-boot", version.ref = "spring-boot" }
